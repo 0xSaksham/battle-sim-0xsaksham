@@ -22,6 +22,7 @@ export class BattleArena {
   }
 
   async startBattle(): Promise<BattleResult> {
+    const MAX_TURNS = 10;
     console.log(
       `⚔️  Battle begins: ${this.fighterA.name} vs ${this.fighterB.name}\n`
     );
@@ -30,7 +31,7 @@ export class BattleArena {
     let defender = this.fighterB;
     let turn = 1;
 
-    while (this.fighterA.hp > 0 && this.fighterB.hp > 0) {
+    while (this.fighterA.hp > 0 && this.fighterB.hp > 0 && turn <= MAX_TURNS) {
       console.log(`🕓 Turn ${turn}: ${attacker.name}'s move...`);
 
       const action = await attacker.act();
@@ -49,6 +50,11 @@ export class BattleArena {
 
     console.log(`\n🏆 Winner: ${winner.name} 🏆`);
     console.table(this.log);
+
+    if (turn > MAX_TURNS) {
+      console.log("\n⚠️ Battle ended because max turns reached.");
+      return { winner: "No winner (timeout)", log: this.log };
+    }
 
     return { winner: winner.name, log: this.log };
   }
